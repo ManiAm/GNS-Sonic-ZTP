@@ -1,7 +1,7 @@
 
 ## SONiC ZTP Execution Flow
 
-The ZTP process in SONiC follows a structured workflow that determines how configuration artifacts are discovered and applied.
+The [ZTP process in SONiC](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md) follows a structured workflow that determines how configuration artifacts are discovered and applied.
 
 ### Service Initialization and Boot Check
 
