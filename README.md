@@ -5,9 +5,9 @@ This project demonstrates Zero-Touch Provisioning for SONiC VS in GNS3 by buildi
 
 ## Zero-touch Provisioning (ZTP)
 
-Zero-Touch Provisioning (ZTP) is an automated mechanism that allows a network device to configure itself during its initial boot without requiring manual intervention from an administrator. This capability is particularly valuable in modern data center environments where large numbers of switches must be deployed and integrated into the network quickly and consistently. Instead of logging into each device individually and applying configuration commands, ZTP enables the device to retrieve configuration data and software artifacts automatically from the network.
+Zero-Touch Provisioning (ZTP) is an automated process that enables a network device to configure itself during its initial boot, without manual intervention. It is especially useful in data center environments, where large numbers of switches must be deployed quickly and consistently.
 
-When a SONiC switch boots for the first time, it typically starts with no operational configuration. In this minimal state, the system initiates the ZTP workflow to obtain basic network connectivity, discover the location of provisioning resources, and download the artifacts required to complete its configuration. These artifacts may include configuration files, scripts, or software images. Once the provisioning process finishes successfully, the device transitions from an un-configured state into a operational switch that participates in the network according to the policies defined by the operator.
+When a SONiC switch starts for the first time, it boots in an unconfigured state and initiates the ZTP workflow. During this process, the device establishes basic network connectivity, discovers provisioning resources, and retrieves the required artifacts such as configuration files, scripts, or software images from the network. Once provisioning completes, the switch transitions into a fully operational state, ready to participate in the network according to the operator-defined configuration.
 
 - Refer to [this guide](./README_ZTP_IMG.md) to build a SONiC VS image with ZTP enabled.
 - Refer to [this guide](./README_ZTP_Flow.md) for an overview of the SONiC ZTP execution flow.
@@ -177,40 +177,6 @@ ZTP Service is not running
 
 01-configdb-json: SUCCESS
 ```
-
-## Generic Structure of `ztp.json`
-
-The `ztp.json` file serves as a structured manifest that defines the tasks the switch must perform during provisioning. The file begins with a mandatory root object named "ztp". If this object is missing, the ZTP engine ignores the file and terminates the provisioning attempt.
-
-Inside this root object, individual provisioning tasks are defined as "configuration sections". Each section describes a specific action such as installing firmware, downloading configuration files, or executing scripts. The ZTP service processes these sections sequentially based on their lexical order. For this reason, administrators typically prefix section names with numeric identifiers to control the execution order (e.g., `01-firmware`, `02-configdb-json`, `03-script`).
-
-Inside each section, you define the parameters for that specific task. You can also include global modifiers like `"ignore-result": true` (which tells ZTP to continue to the next step even if the current one fails) or `"reboot-on-success": true`.
-
-```json
-{
-  "ztp": {
-    "01-firmware": {
-      "install": {
-        "url": "http://10.0.0.1/sonic-image.bin"
-      }
-    },
-    "02-configdb-json": {
-      "url": {
-        "source": "tftp://10.0.0.1/config_db.json",
-        "destination": "/etc/sonic/config_db.json"
-      }
-    }
-  }
-}
-```
-
-## ZTP Plugins
-
-While the `ztp.json` file defines the desired provisioning workflow, the actual execution of each task is handled by ZTP plugins. A plugin is an executable component responsible for processing the instructions contained within a configuration section. When the ZTP engine encounters a section, it passes the section’s data to the appropriate plugin, which performs the requested action and returns a status code indicating success or failure.
-
-SONiC includes several predefined plugins that support common provisioning operations. For example, the `configdb-json` plugin installs a new configuration database and reloads the switch configuration, while the `firmware` plugin installs a new SONiC image on an alternate boot partition. Other built-in plugins perform tasks such as verifying network connectivity or configuring SNMP parameters. You can find a list [here](https://github.com/sonic-net/SONiC/blob/master/doc/ztp/ztp.md#323-available-plugins-and-configuration-sections).
-
-In addition to these built-in plugins, SONiC also supports custom plugins defined by the operator. These plugins are typically implemented as scripts that perform environment-specific actions, such as registering the device with an inventory system or installing additional monitoring agents. During the ZTP process, the switch downloads the custom script, executes it with the provided parameters, and evaluates its exit code to determine whether the task completed successfully.
 
 ## Device Identification in ZTP
 
