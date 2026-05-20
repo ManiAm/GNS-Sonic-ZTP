@@ -24,7 +24,7 @@ make configure PLATFORM=vs
 SONIC_BUILD_JOBS=8 make target/sonic-vs.img.gz
 ```
 
-The resulting `sonic-vs.img.gz` image contains the ZTP service and can be imported into environments such as GNS3 for testing automated provisioning workflows. Sonic build process is explained in [here](https://github.com/ManiAm/GNS-Bench/blob/master/docs/Sonic_Build.md).
+The resulting `sonic-vs.img.gz` image contains the ZTP service and can be imported into environments such as GNS3 for testing automated provisioning workflows. Sonic build process is explained in [here](https://github.com/ManiAm/net-lab-switch-setup/blob/master/docs/Sonic_Build.md).
 
 ## Verify ZTP is Active
 
